@@ -1,0 +1,13 @@
+.arc-env
+.env
+.DS_Store
+.vscode
+node_modules
+public/css/*
+cert.info
+sam.json
+sam.yaml
+preferences.arc
+static.json
+prefs.arc
+example/

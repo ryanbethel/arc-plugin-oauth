@@ -1,0 +1,43 @@
+{
+    "name": "arc-oauth-example",
+    "version": "0.0.0",
+    "description": "Architect OAuth Plugin",
+    "scripts": {
+        "start": "arc sandbox",
+        "lint": "eslint src --ignore-pattern node_modules --fix",
+        "test": " cross-env tape 'test/**/*-test.js' --verbose | tap-arc "
+    },
+    "devDependencies": {
+        "arc-plugin-oauth": "file:../"
+    },
+    "eslintConfig": {
+        "extends": [
+            "@architect/eslint-config",
+            "plugin:prettier/recommended"
+        ],
+        "plugins": [
+            "prettier"
+        ],
+        "rules": {
+            "prettier/prettier": [
+                "error",
+                {
+                    "semi": false,
+                    "singleQuote": true,
+                    "tabWidth": 2,
+                    "useTabs": false,
+                    "trailingComma": "none"
+                }
+            ]
+        },
+        "parserOptions": {
+            "ecmaVersion": 2020,
+            "sourceType": "module"
+        },
+        "env": {
+            "es2021": true,
+            "browser": true,
+            "node": true
+        }
+    }
+}
