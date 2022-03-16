@@ -42,7 +42,7 @@ module.exports = {
       const useMock = arc.oauth.find((i) => i[0] === 'use-mock')[1]
       const mockAllowList = arc.oauth.find((i) => i[0] === 'mock-list')
         ? arc.oauth.find((i) => i[0] === 'mock-list')[1]
-        : 'mock-list'
+        : 'mock-allow.mjs'
       const useAllowList = arc.oauth.find((i) => i[0] === 'allow-list')
       const allowList = useAllowList
         ? arc.oauth.find((i) => i[0] === 'allow-list')[1]
