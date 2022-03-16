@@ -9,14 +9,14 @@ export default {
       name: 'John Doe'
     }
   },
-  matchProperty: 'login',
-  includeProviderProperties: ['name', 'login'],
   appAccounts: {
     ryanbethel: {
-      role: 'member'
+      role: 'member',
+      name: 'Ryan Bethel'
     },
     johndoe: {
-      role: 'member'
+      role: 'member',
+      name: 'John Doe'
     }
   }
 }
