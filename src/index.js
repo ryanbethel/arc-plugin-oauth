@@ -39,6 +39,7 @@ module.exports = {
   },
   set: {
     env: ({ arc }) => {
+      const afterLoginURL = arc.oauth.find((i) => i[0] === 'after-auth-url')[1]
       const useMock = arc.oauth.find((i) => i[0] === 'use-mock')[1]
       const mockAllowList = arc.oauth.find((i) => i[0] === 'mock-list')
         ? arc.oauth.find((i) => i[0] === 'mock-list')[1]
@@ -48,6 +49,7 @@ module.exports = {
         ? arc.oauth.find((i) => i[0] === 'allow-list')[1]
         : ''
       const testing = {
+        ARC_OAUTH_AFTER_AUTH: afterLoginURL ? afterLoginURL : '/',
         ARC_OAUTH_USE_MOCK: useMock ? 'true' : '',
         ARC_OAUTH_USE_ALLOW_LIST: useAllowList ? 'true' : '',
         ARC_OAUTH_ALLOW_LIST: allowList,
@@ -64,9 +66,11 @@ module.exports = {
       return {
         testing,
         staging: {
+          ARC_OAUTH_AFTER_AUTH: afterLoginURL ? afterLoginURL : '/',
           ARC_OAUTH_ALLOW_LIST: allowList
         },
         production: {
+          ARC_OAUTH_AFTER_AUTH: afterLoginURL ? afterLoginURL : '/',
           ARC_OAUTH_ALLOW_LIST: allowList
         }
       }
