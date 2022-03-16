@@ -6,7 +6,7 @@ module.exports = {
       return `https://github.com/login/oauth/authorize?client_id=${process.env.ARC_OAUTH_CLIENT_ID}`
   },
   checkAuth: async function (req) {
-    return req?.session?.user
+    return req?.session?.account
   },
   auth: async function (req) {
     function isJSON (req) {
@@ -14,9 +14,9 @@ module.exports = {
         req.headers['Content-Type'] || req.headers['content-type']
       return /application\/json/gi.test(contentType)
     }
-    const user = req?.session?.user
+    const account = req?.session?.account
 
-    if (!user) {
+    if (!account) {
       if (isJSON(req)) {
         return {
           statusCode: 401
@@ -40,6 +40,8 @@ module.exports = {
   set: {
     env: ({ arc }) => {
       const afterLoginURL = arc.oauth.find((i) => i[0] === 'after-auth-url')[1]
+      const matchProperty = arc.oauth.find((i) => i[0] === 'match-property')[1]
+      const includeProperties = JSON.stringify(arc.oauth.find((i) => i[0] === 'include-properties').slice(1))
       const useMock = arc.oauth.find((i) => i[0] === 'use-mock')[1]
       const mockAllowList = arc.oauth.find((i) => i[0] === 'mock-list')
         ? arc.oauth.find((i) => i[0] === 'mock-list')[1]
@@ -50,6 +52,8 @@ module.exports = {
         : ''
       const testing = {
         ARC_OAUTH_AFTER_AUTH: afterLoginURL ? afterLoginURL : '/',
+        ARC_OAUTH_INCLUDE_PROPERTIES: includeProperties,
+        ARC_OAUTH_MATCH_PROPERTY: matchProperty,
         ARC_OAUTH_USE_MOCK: useMock ? 'true' : '',
         ARC_OAUTH_USE_ALLOW_LIST: useAllowList ? 'true' : '',
         ARC_OAUTH_ALLOW_LIST: allowList,
@@ -66,10 +70,14 @@ module.exports = {
       return {
         testing,
         staging: {
+          ARC_OAUTH_INCLUDE_PROPERTIES: includeProperties,
+          ARC_OAUTH_MATCH_PROPERTY: matchProperty,
           ARC_OAUTH_AFTER_AUTH: afterLoginURL ? afterLoginURL : '/',
           ARC_OAUTH_ALLOW_LIST: allowList
         },
         production: {
+          ARC_OAUTH_INCLUDE_PROPERTIES: includeProperties,
+          ARC_OAUTH_MATCH_PROPERTY: matchProperty,
           ARC_OAUTH_AFTER_AUTH: afterLoginURL ? afterLoginURL : '/',
           ARC_OAUTH_ALLOW_LIST: allowList
         }

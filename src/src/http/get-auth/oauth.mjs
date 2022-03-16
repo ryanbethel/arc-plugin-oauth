@@ -1,18 +1,8 @@
 import tiny from 'tiny-json-http'
 const useMock = process.env.ARC_OAUTH_USE_MOCK
-const useAllowList = process.env.ARC_OAUTH_USE_ALLOW_LIST
-let allowListPromise
-if (useAllowList && useMock)
-  allowListPromise = import(
-    `@architect/shared/${process.env.ARC_OAUTH_MOCK_ALLOW_LIST}`
-  )
-if (useAllowList && !useMock)
-  allowListPromise = import(
-    `@architect/shared/${process.env.ARC_OAUTH_ALLOW_LIST}`
-  )
+const includeProperties = JSON.parse(process.env.ARC_OAUTH_INCLUDE_PROPERTIES)
 
 export default async function oauth (req) {
-  const allowList = (await allowListPromise).default
   const data = {
     code: req.query.code
   }
@@ -34,15 +24,12 @@ export default async function oauth (req) {
       Accept: 'application/json'
     }
   })
+  
   const providerUser = userResult.body
-  const matchOn = allowList.matchProperty
-  const appUser = allowList.appAccounts[providerUser[matchOn]]
-  const providerDetails = {}
-  allowList.includeProviderProperties.forEach(
-    (i) => (providerDetails[i] = providerUser[i])
-  )
+  const filteredDetails = {}
+  includeProperties.forEach(
+    (i) => (filteredDetails[i] = providerUser[i]))
   return {
-    user: { ...appUser, [matchOn]: providerUser[matchOn] },
-    providerDetails
+    oauth: { user: filteredDetails }
   }
 }
