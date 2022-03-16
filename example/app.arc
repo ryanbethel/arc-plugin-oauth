@@ -8,7 +8,7 @@ get /
 arc-plugin-oauth
 
 @oauth
-use-mock false
+use-mock true
 routes login auth logout 
 allow-list allow.mjs
 mock-list mock-allow.mjs

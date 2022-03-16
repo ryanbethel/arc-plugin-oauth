@@ -1,4 +1,4 @@
-const arc = require('@architect/functions')
+import arc from '@architect/functions'
 
 async function logout () {
   return {
@@ -8,4 +8,4 @@ async function logout () {
   }
 }
 
-exports.handler = arc.http.async(logout)
+export const handler = arc.http.async(logout)

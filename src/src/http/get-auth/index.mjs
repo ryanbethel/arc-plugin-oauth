@@ -1,7 +1,7 @@
-const arc = require('@architect/functions')
-const oauth = require('./oauth')
+import arc from '@architect/functions'
+import oauth from './oauth.mjs'
 
-exports.handler = arc.http.async(auth)
+export const handler = arc.http.async(auth)
 
 async function auth (req) {
   const {

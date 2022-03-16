@@ -1,8 +1,10 @@
-const arc = require('@architect/functions')
-const mockAllowList = require(`@architect/shared/${process.env.ARC_OAUTH_MOCK_ALLOW_LIST}`)
+import arc from '@architect/functions'
+const mockAllowListPromise = import(`@architect/shared/${process.env.ARC_OAUTH_MOCK_ALLOW_LIST}`)
 
-exports.handler = arc.http.async(getLogin, getCode, getToken, getUserInfo)
+
+export const handler = arc.http.async(getLogin, getCode, getToken, getUserInfo)
 async function getLogin (req) {
+let mockAllowList = (await mockAllowListPromise).default
   const providerAccounts = Object.keys(mockAllowList.mockProviderAccounts)
   const mockCodes = providerAccounts.map((i) =>
     Buffer.from(i).toString('base64')
@@ -43,6 +45,7 @@ async function getToken (req) {
 }
 async function getUserInfo (req) {
   if (req.params.part === 'user') {
+    let mockAllowList = (await mockAllowListPromise).default
     const token = req.headers.authorization.replace('token ', '')
     const userReference = Buffer.from(token, 'base64').toString('ascii')
     const user = mockAllowList.mockProviderAccounts[userReference]

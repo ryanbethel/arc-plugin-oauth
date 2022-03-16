@@ -1,4 +1,4 @@
-const tiny = require('tiny-json-http')
+import tiny from 'tiny-json-http'
 const useMock = process.env.ARC_OAUTH_USE_MOCK
 const useAllowList = process.env.ARC_OAUTH_USE_ALLOW_LIST
 let allowListPromise
@@ -11,7 +11,7 @@ if (useAllowList && !useMock)
     `@architect/shared/${process.env.ARC_OAUTH_ALLOW_LIST}`
   )
 
-module.exports = async function oauth (req) {
+export default async function oauth (req) {
   const allowList = (await allowListPromise).default
   const data = {
     code: req.query.code

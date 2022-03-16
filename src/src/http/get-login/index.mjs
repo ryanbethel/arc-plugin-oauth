@@ -1,8 +1,8 @@
-const arc = require('@architect/functions')
-const arcOauth = require('../../../index')
+import arc from '@architect/functions'
+import arcOauth from '../../../index.js'
 const href = arcOauth.loginHref()
 
-exports.handler = arc.http.async(login)
+export const handler = arc.http.async(login)
 
 async function login () {
   return {
