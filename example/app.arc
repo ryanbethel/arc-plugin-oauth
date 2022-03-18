@@ -9,7 +9,7 @@ arc-plugin-oauth
 
 @oauth
 provider github #defaults to github
-use-mock false #default true use mock oauth for testing
+use-mock true #default true use mock oauth for testing
 match-property login #provider property to match against
 include-properties name login #provider properties to add to session
 routes login auth logout mock #default "login auth logout mock" are routes added

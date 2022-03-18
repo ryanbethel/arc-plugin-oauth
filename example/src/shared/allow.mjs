@@ -2,7 +2,8 @@ export default {
   appAccounts: {
     ryanbethel: {
       role: 'member',
-      name: 'ryanbethel'
+      login: 'ryanbethel',
+      name: 'Ryan Bethel'
     }
   }
 }

@@ -9,42 +9,20 @@ module.exports = {
   checkAuth: async function (req) {
     return req?.session?.account
   },
+  authRedirect: async function (redirect) {
+    return async function (req) {
+      return authenticate(req, redirect)
+    }
+  },
   auth: async function (req) {
-    const unAuthRedirect = process.env.ARC_OAUTH_UN_AUTH_REDIRECT || '/login'
-    function isJSON (req) {
-      let contentType =
-        req.headers['Content-Type'] || req.headers['content-type']
-      return /application\/json/gi.test(contentType)
-    }
-    const account = req?.session?.account
-
-    if (!account) {
-      if (isJSON(req)) {
-        return {
-          statusCode: 401
-        }
-      }
-      else {
-        return {
-          statusCode: 302,
-          headers: {
-            'cache-control':
-              'no-cache, no-store, must-revalidate, max-age=0, s-maxage=0'
-          },
-          location: unAuthRedirect
-        }
-      }
-    }
-    else {
-      return false
-    }
+    return authenticate(req, false)
   },
   set: {
     env: ({ arc }) => {
       const afterAuthRedirect = arc.oauth.find((i) => i[0] === 'after-auth-redirect')?.[1]
       const unAuthRedirect = arc.oauth.find((i) => i[0] === 'un-auth-redirect')?.[1]
-      const matchProperty = arc.oauth.find((i) => i[0] === 'match-property')?.[1]
-      const includeProperties = JSON.stringify(arc.oauth.find((i) => i[0] === 'include-properties').slice(1))
+      const matchProperty = arc.oauth.find((i) => i[0] === 'match-property')?.[1] || 'login'
+      const includeProperties = arc.oauth.find((i) => i[0] === 'include-properties') ? JSON.stringify(arc.oauth.find((i) => i[0] === 'include-properties').slice(1)) : matchProperty
       const useMock = arc.oauth.find((i) => i[0] === 'use-mock')?.[1]
       const mockAllowList = arc.oauth.find((i) => i[0] === 'mock-list')
         ? arc.oauth.find((i) => i[0] === 'mock-list')[1]
@@ -128,5 +106,36 @@ module.exports = {
 
       return endpoints
     }
+  }
+}
+
+async function authenticate (req, redirect) {
+  const unAuthRedirect = process.env.ARC_OAUTH_UN_AUTH_REDIRECT || '/login'
+  function isJSON (req) {
+    let contentType =
+        req.headers['Content-Type'] || req.headers['content-type']
+    return /application\/json/gi.test(contentType)
+  }
+  const account = req?.session?.account
+
+  if (!account) {
+    if (isJSON(req)) {
+      return {
+        statusCode: 401
+      }
+    }
+    else {
+      return {
+        statusCode: 302,
+        headers: {
+          'cache-control':
+              'no-cache, no-store, must-revalidate, max-age=0, s-maxage=0'
+        },
+        location: redirect ? redirect : unAuthRedirect
+      }
+    }
+  }
+  else {
+    return false
   }
 }

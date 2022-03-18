@@ -20,7 +20,7 @@ let mockAllowList = (await mockAllowListPromise).default
           process.env.ARC_OAUTH_CODE_URI + '?mock=' + mockCodes[i]
         }">${k}</a>`
     )
-    .join('  ')}
+    .join(' <br/> ')}
     `
     }
   }
