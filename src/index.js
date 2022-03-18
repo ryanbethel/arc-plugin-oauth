@@ -1,14 +1,16 @@
 module.exports = {
   loginHref: function () {
+    const redirectUrlPart = process.env.ARC_OAUTH_REDIRECT_URL ? `&redirect_url=${process.env.ARC_OAUTH_REDIRECT_URL}` : ''
     if (process.env.ARC_OAUTH_USE_MOCK)
       return 'http://localhost:3333/mock/auth/login'
     else
-      return `https://github.com/login/oauth/authorize?client_id=${process.env.ARC_OAUTH_CLIENT_ID}`
+      return `https://github.com/login/oauth/authorize?client_id=${process.env.ARC_OAUTH_CLIENT_ID}${redirectUrlPart}`
   },
   checkAuth: async function (req) {
     return req?.session?.account
   },
   auth: async function (req) {
+    const unAuthRedirect = process.env.ARC_OAUTH_UN_AUTH_REDIRECT || '/login'
     function isJSON (req) {
       let contentType =
         req.headers['Content-Type'] || req.headers['content-type']
@@ -29,7 +31,7 @@ module.exports = {
             'cache-control':
               'no-cache, no-store, must-revalidate, max-age=0, s-maxage=0'
           },
-          location: '/login'
+          location: unAuthRedirect
         }
       }
     }
@@ -39,19 +41,21 @@ module.exports = {
   },
   set: {
     env: ({ arc }) => {
-      const afterLoginURL = arc.oauth.find((i) => i[0] === 'after-auth-url')[1]
-      const matchProperty = arc.oauth.find((i) => i[0] === 'match-property')[1]
+      const afterAuthRedirect = arc.oauth.find((i) => i[0] === 'after-auth-redirect')?.[1]
+      const unAuthRedirect = arc.oauth.find((i) => i[0] === 'un-auth-redirect')?.[1]
+      const matchProperty = arc.oauth.find((i) => i[0] === 'match-property')?.[1]
       const includeProperties = JSON.stringify(arc.oauth.find((i) => i[0] === 'include-properties').slice(1))
-      const useMock = arc.oauth.find((i) => i[0] === 'use-mock')[1]
+      const useMock = arc.oauth.find((i) => i[0] === 'use-mock')?.[1]
       const mockAllowList = arc.oauth.find((i) => i[0] === 'mock-list')
         ? arc.oauth.find((i) => i[0] === 'mock-list')[1]
         : 'mock-allow.mjs'
       const useAllowList = arc.oauth.find((i) => i[0] === 'allow-list')
       const allowList = useAllowList
-        ? arc.oauth.find((i) => i[0] === 'allow-list')[1]
+        ? arc.oauth.find((i) => i[0] === 'allow-list')?.[1]
         : ''
       const testing = {
-        ARC_OAUTH_AFTER_AUTH: afterLoginURL ? afterLoginURL : '/',
+        ARC_OAUTH_AFTER_AUTH: afterAuthRedirect ? afterAuthRedirect : '/',
+        ARC_OAUTH_UN_AUTH_REDIRECT: unAuthRedirect ? unAuthRedirect : '/login',
         ARC_OAUTH_INCLUDE_PROPERTIES: includeProperties,
         ARC_OAUTH_MATCH_PROPERTY: matchProperty,
         ARC_OAUTH_USE_MOCK: useMock ? 'true' : '',
@@ -72,14 +76,20 @@ module.exports = {
         staging: {
           ARC_OAUTH_INCLUDE_PROPERTIES: includeProperties,
           ARC_OAUTH_MATCH_PROPERTY: matchProperty,
-          ARC_OAUTH_AFTER_AUTH: afterLoginURL ? afterLoginURL : '/',
-          ARC_OAUTH_ALLOW_LIST: allowList
+          ARC_OAUTH_AFTER_AUTH: afterAuthRedirect ? afterAuthRedirect : '/',
+          ARC_OAUTH_UN_AUTH_REDIRECT: unAuthRedirect ? unAuthRedirect : '/login',
+          ARC_OAUTH_ALLOW_LIST: allowList,
+          ARC_OAUTH_TOKEN_URI: 'https://github.com/login/oauth/access_token',
+          ARC_OAUTH_USER_INFO_URI: 'https://api.github.com/user'
         },
         production: {
           ARC_OAUTH_INCLUDE_PROPERTIES: includeProperties,
           ARC_OAUTH_MATCH_PROPERTY: matchProperty,
-          ARC_OAUTH_AFTER_AUTH: afterLoginURL ? afterLoginURL : '/',
-          ARC_OAUTH_ALLOW_LIST: allowList
+          ARC_OAUTH_AFTER_AUTH: afterAuthRedirect ? afterAuthRedirect : '/',
+          ARC_OAUTH_UN_AUTH_REDIRECT: unAuthRedirect ? unAuthRedirect : '/login',
+          ARC_OAUTH_ALLOW_LIST: allowList,
+          ARC_OAUTH_TOKEN_URI: 'https://github.com/login/oauth/access_token',
+          ARC_OAUTH_USER_INFO_URI: 'https://api.github.com/user'
         }
       }
     },
@@ -118,10 +128,5 @@ module.exports = {
 
       return endpoints
     }
-  },
-  sandbox: {
-    start: async (/* params*/) => {},
-    watcher: async (/* params*/) => {},
-    end: async (/* params*/) => {}
   }
 }
