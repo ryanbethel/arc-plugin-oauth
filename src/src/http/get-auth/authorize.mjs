@@ -11,9 +11,10 @@ if (useAllowList && !useMock)
     `@architect/shared/${process.env.ARC_OAUTH_ALLOW_LIST}`
   )
 
-export default async function authorize (providerAccount) {
+export default async function authorize(providerAccount) {
   const allowList = (await allowListPromise).default
-  const appUser = allowList.appAccounts[providerAccount.oauth.user[matchProperty]] 
+  const appUser =
+    allowList.appAccounts[providerAccount.oauth.user[matchProperty]]
   if (!appUser) return false
-  return  appUser 
+  return appUser
 }

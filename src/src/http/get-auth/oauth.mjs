@@ -2,7 +2,7 @@ import tiny from 'tiny-json-http'
 const useMock = process.env.ARC_OAUTH_USE_MOCK
 const includeProperties = JSON.parse(process.env.ARC_OAUTH_INCLUDE_PROPERTIES)
 
-export default async function oauth (req) {
+export default async function oauth(req) {
   const data = {
     code: req.query.code
   }
@@ -24,11 +24,10 @@ export default async function oauth (req) {
       Accept: 'application/json'
     }
   })
-  
+
   const providerUser = userResult.body
   const filteredDetails = {}
-  includeProperties.forEach(
-    (i) => (filteredDetails[i] = providerUser[i]))
+  includeProperties.forEach((i) => (filteredDetails[i] = providerUser[i]))
   return {
     oauth: { user: filteredDetails }
   }

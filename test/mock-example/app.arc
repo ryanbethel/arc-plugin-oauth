@@ -17,6 +17,7 @@ allow-list allow.mjs #use an allow list for simple authorization. allow.mjs in s
 mock-list mock-allow.mjs
 after-auth-redirect /
 un-auth-redirect /login
+#custom-authorize /authorize
 
 @aws
 runtime nodejs14.x

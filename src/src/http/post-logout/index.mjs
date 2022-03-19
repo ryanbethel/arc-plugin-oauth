@@ -1,6 +1,6 @@
 import arc from '@architect/functions'
 
-async function logout () {
+async function logout() {
   return {
     session: {},
     status: 303,

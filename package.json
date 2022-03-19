@@ -2,13 +2,23 @@
     "name": "arc-plugin-oauth",
     "version": "0.0.6",
     "description": "Architect OAuth Plugin",
+    "author": "Ryan Bethel",
     "main": "src/index.js",
     "scripts": {
-        "lint": "eslint src --ignore-pattern node_modules --fix"
+        "start": "cd test/mock-example && sandbox",
+        "lint": "eslint src --ignore-pattern node_modules --fix",
+        "test:unit": "ARC_TABLES_PORT=5555 cross-env tape 'test/unit/**/*-test.mjs' --verbose | tap-arc ",
+        "playwright": "playwright test && exit 1",
+        "test:browser": "run-p start playwright"
     },
     "devDependencies": {
         "@architect/eslint-config": "^2.0.1",
+        "@playwright/test": "^1.20.0",
+        "cross-env": "^7.0.3",
         "eslint": "^8.4.1",
+        "eslint-config-prettier": "^8.5.0",
+        "eslint-plugin-prettier": "^4.0.0",
+        "npm-run-all": "^4.1.5",
         "prettier": "^2.5.1",
         "prettier-eslint": "^13.0.0",
         "tap-arc": "^0.1.1",
@@ -21,7 +31,33 @@
     },
     "eslintConfig": {
         "extends": [
-            "@architect/eslint-config"
-        ]
+            "@architect/eslint-config",
+            "plugin:prettier/recommended"
+        ],
+        "plugins": [
+            "prettier"
+        ],
+        "rules": {
+            "prettier/prettier": [
+                "error",
+                {
+                    "semi": false,
+                    "singleQuote": true,
+                    "tabWidth": 2,
+                    "useTabs": false,
+                    "trailingComma": "none",
+                    "bracketSameLine": true
+                }
+            ]
+        },
+        "parserOptions": {
+            "ecmaVersion": 2020,
+            "sourceType": "module"
+        },
+        "env": {
+            "es2021": true,
+            "browser": true,
+            "node": true
+        }
     }
 }

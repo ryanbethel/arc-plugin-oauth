@@ -75,17 +75,17 @@ async function index(req) {
 ## Built-in routes 
 The plugin adds the following built-in routes:
 - `get /auth`: The primary route for decoding and verifying OAuth tokens from providers. This is the route that OAuth redirects are pointed to. This is the minimal route that must be enabled for this plugin to work. 
-- `get /login`: A basic login page. As the app is designed it can be replaced by a styled version using the [loginHref](#loginHref) helper.
+- `get /login`: A basic login page. As the app is built this route can be replaced by a styled version using the [loginHref](#custom-login-page-and-loginhref-helper) helper.
 - `post /logout`: Post route that clears the session causing the user to be logged out.
 - `get /mock/auth`: Provides the mock provider for local development. If mocking is disabled this route is not included.
 
-By default all routes are included. They can be customized using the [`routes`](#route) parameter. 
+By default all routes are included. They can be customized using the [`routes parameter`](#configuration-api) parameter. 
 
 
 ## Configuration
 The plugin is configured under the `@oauth` pragma in the app manifest file. With zero config it provides a working OAuth setup for Github.
 
-### Zero Config
+### Minimum Configuration
 ```
 @plugins
 arc-plugin-oauth
@@ -93,7 +93,7 @@ arc-plugin-oauth
 @oauth
 ```
 
-### Fully Configured
+### Full Configuration
 ```
 @plugins
 arc-plugin-oauth
@@ -131,10 +131,10 @@ un-auth-redirect /login
 - `allow-list`:
   Use simple allow list for authorization.
   - default: false
-  - This parameter can specify a custom allow list file name or use the default. 
-    - `allow-list custom-allow-file.mjs`
+  - This parameter can specify a custom allow list file name or use the default. Any subdirectory in the shared folder may be specified. 
+    - `allow-list oauth/custom-allow-file.mjs` points to `src/shared/oauth/custom-allow-file.mjs`
 - `mock-list`:
-  Custom mock allow list. 
+  Custom mock allow list. Any subdirectory in the shared folder may be specified.  
   - default: mock-allow.mjs
 - `after-auth-redirect`:
   URL to redirect to after authentication.
@@ -142,11 +142,13 @@ un-auth-redirect /login
 - `un-auth-redirect`:
   URL to redirect to for unauthorized users.
   - default: '/login'
+- `custom-authorize`:
+  URL to redirect after login for [custom authorization](#custom-authorization).  
 
 
 ## Helper Functions API
 
-### Custom Login Page and `loginHref` helper
+### Custom login page and `loginHref` helper
 Provides url for a login button. The built-in login route provides basic functionality to get started. It is un-styled. To build a custom login page or to add a login button from anywhere in the app do the following:
 ```
 # app.arc manifest
@@ -156,7 +158,7 @@ get /login # adds a custom '/login' route
 @oauth
 routes auth logout # removes the built-in '/login' route
 ```
-
+Use the `loginHref()` function as shown below to point to initiate the login. This is a function that is executed in the handler because it needs to access the environment variable `ARC_OAUTH_REDIRECT_URL` at execution time(see [setup OAuth Providers](#setup-oauth-providers)). 
 ```javascript
 // src/http/get-login/index.mjs
 import arc from '@architect/functions'
@@ -287,7 +289,7 @@ export default {
 ```
 In this example the `mockProviderAccounts` are shown as options in the login flow. The corresponding app accounts are exported from the mock file as well. 
 
-### Advanced authorization 
+### Custom authorization 
 Authorization can be done against user accounts stored in a database or other source. To do this allow-list must be disabled, which is the default configuration if there is no `allow-list` setting under the `@oauth` pragma. 
 
 Next an '/authorization' route can be setup in the app that contains the user authorization logic. 
@@ -295,6 +297,11 @@ Next an '/authorization' route can be setup in the app that contains the user au
 # app.arc manifest
 @http
 get /authorization 
+```
+The custom authorize route is set as with the `custom-authorize` parameter:
+```
+@oauth
+custom-authorize /authorize
 ```
 
 Finally the authorization handler can be added as follows:
@@ -343,7 +350,7 @@ If the new application user account is assigned to `sessions.account` then all t
 The application user object should be stored in `session.account` to ensure auth helper functions work correctly. Any of the application account user properties can be accessed there. The oauth account properties that are included with the `include-properties` configuration can be found in the `req.session.oauth` object. 
 
 ## Setup OAuth Provider
-To configure an OAuth provider (i.e. Gituhub) for a staging or production environment the following environment variables should be set:
+To configure an OAuth provider (i.e. Github) for a staging or production environment the following environment variables should be set:
 
 - ARC_APP_SECRET: Not specifically related to the plugin this is an Architect environment variable for ensuring sessions are encoded securely. 
 - ARC_OAUTH_CLIENT_ID: This is the client ID obtained from registering your OAuth app in the provider console.
