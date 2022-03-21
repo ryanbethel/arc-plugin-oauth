@@ -1,0 +1,11 @@
+{
+    "name": "arc-oauth-mock",
+    "version": "0.0.0",
+    "description": "Architect OAuth Tests",
+    "scripts": {
+        "start": "arc sandbox"
+    },
+    "devDependencies": {
+        "arc-plugin-oauth": "file:../../../"
+    }
+}

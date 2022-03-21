@@ -11,8 +11,8 @@ async function index(req) {
       <head>
       </head>
       <body>
-        Hello ${name || 'World'}
-        You Made it!
+        <p>Hello ${name || 'World'}
+        You Made it!</p>
         <form method="post" action="/logout" >
         <button type="submit">Logout</button></form>
       </body>

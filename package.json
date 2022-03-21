@@ -5,11 +5,9 @@
     "author": "Ryan Bethel",
     "main": "src/index.js",
     "scripts": {
-        "start": "cd test/mock-example && sandbox",
         "lint": "eslint src --ignore-pattern node_modules --fix",
-        "test:unit": "ARC_TABLES_PORT=5555 cross-env tape 'test/unit/**/*-test.mjs' --verbose | tap-arc ",
-        "playwright": "playwright test && exit 1",
-        "test:browser": "run-p start playwright"
+        "hydrate:tests": "cd test/mocks && npm i",
+        "test": "MOCK_FOLDER=basic playwright test test/browser/basic.spec.mjs --config test/playwright.config.mjs"
     },
     "devDependencies": {
         "@architect/eslint-config": "^2.0.1",
