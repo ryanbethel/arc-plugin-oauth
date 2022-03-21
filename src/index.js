@@ -38,7 +38,7 @@ module.exports = {
         ? JSON.stringify(
             arc.oauth.find((i) => i[0] === 'include-properties').slice(1)
           )
-        : matchProperty
+        : [matchProperty]
       const useMock = arc.oauth.find((i) => i[0] === 'use-mock')?.[1]
       const mockAllowList = arc.oauth.find((i) => i[0] === 'mock-list')
         ? arc.oauth.find((i) => i[0] === 'mock-list')[1]
