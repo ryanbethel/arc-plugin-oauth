@@ -76,6 +76,7 @@ module.exports = {
           ARC_OAUTH_UN_AUTH_REDIRECT: unAuthRedirect
             ? unAuthRedirect
             : '/login',
+          ARC_OAUTH_USE_ALLOW_LIST: useAllowList ? 'true' : '',
           ARC_OAUTH_ALLOW_LIST: allowList,
           ARC_OAUTH_TOKEN_URI: 'https://github.com/login/oauth/access_token',
           ARC_OAUTH_USER_INFO_URI: 'https://api.github.com/user'
@@ -88,13 +89,14 @@ module.exports = {
           ARC_OAUTH_UN_AUTH_REDIRECT: unAuthRedirect
             ? unAuthRedirect
             : '/login',
+          ARC_OAUTH_USE_ALLOW_LIST: useAllowList ? 'true' : '',
           ARC_OAUTH_ALLOW_LIST: allowList,
           ARC_OAUTH_TOKEN_URI: 'https://github.com/login/oauth/access_token',
           ARC_OAUTH_USER_INFO_URI: 'https://api.github.com/user'
         }
       }
     },
-    http: function ({ arc, /* inventory,*/ stage }) {
+    http: function ({ arc, inventory }) {
       const specificRoutes = arc.oauth.find((i) => i[0] === 'routes') || false
       const useMock = arc.oauth.find((i) => i[0] === 'use-mock')[1]
       let endpoints = []
@@ -119,7 +121,7 @@ module.exports = {
           config: { runtime: 'nodejs14.x' },
           src: './node_modules/arc-plugin-oauth/src/src/http/get-login'
         })
-      if (useMock && stage === 'testing')
+      if (useMock && !inventory.inv.deployStage)
         endpoints.push({
           method: 'any',
           path: '/mock/auth/:part',
