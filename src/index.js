@@ -9,14 +9,14 @@ module.exports = {
       return `https://github.com/login/oauth/authorize?client_id=${process.env.ARC_OAUTH_CLIENT_ID}${redirectUrlPart}`
   },
   checkAuth: function (req) {
-    return req?.session?.oauth
+    return req?.session?.account
   },
-  authRedirect: async function (redirect) {
-    return async function (req) {
+  authRedirect: function (redirect) {
+    return function (req) {
       return authenticate(req, redirect)
     }
   },
-  auth: async function (req) {
+  auth: function (req) {
     return authenticate(req, false)
   },
   set: {
@@ -132,13 +132,13 @@ module.exports = {
   }
 }
 
-async function authenticate(req, redirect) {
+function authenticate(req, redirect) {
   const unAuthRedirect = process.env.ARC_OAUTH_UN_AUTH_REDIRECT || '/login'
   function isJSON(req) {
     let contentType = req.headers['Content-Type'] || req.headers['content-type']
     return /application\/json/gi.test(contentType)
   }
-  const account = req?.session?.oauth
+  const account = req?.session?.account
 
   if (!account) {
     if (isJSON(req)) {
