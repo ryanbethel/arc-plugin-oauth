@@ -72,6 +72,7 @@ module.exports = {
           ARC_OAUTH_INCLUDE_PROPERTIES: includeProperties,
           ARC_OAUTH_CUSTOM_AUTHORIZE: customAuthorize ? customAuthorize : '',
           ARC_OAUTH_MATCH_PROPERTY: matchProperty,
+          ARC_OAUTH_USE_ALLOW_LIST: useAllowList ? 'true' : '',
           ARC_OAUTH_AFTER_AUTH: afterAuthRedirect ? afterAuthRedirect : '/',
           ARC_OAUTH_UN_AUTH_REDIRECT: unAuthRedirect
             ? unAuthRedirect
@@ -84,6 +85,7 @@ module.exports = {
           ARC_OAUTH_INCLUDE_PROPERTIES: includeProperties,
           ARC_OAUTH_CUSTOM_AUTHORIZE: customAuthorize ? customAuthorize : '',
           ARC_OAUTH_MATCH_PROPERTY: matchProperty,
+          ARC_OAUTH_USE_ALLOW_LIST: useAllowList ? 'true' : '',
           ARC_OAUTH_AFTER_AUTH: afterAuthRedirect ? afterAuthRedirect : '/',
           ARC_OAUTH_UN_AUTH_REDIRECT: unAuthRedirect
             ? unAuthRedirect
