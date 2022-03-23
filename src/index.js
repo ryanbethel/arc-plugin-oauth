@@ -94,7 +94,7 @@ module.exports = {
         }
       }
     },
-    http: function ({ arc /* inventory, stage*/ }) {
+    http: function ({ arc, /* inventory,*/ stage }) {
       const specificRoutes = arc.oauth.find((i) => i[0] === 'routes') || false
       const useMock = arc.oauth.find((i) => i[0] === 'use-mock')[1]
       let endpoints = []
@@ -119,7 +119,7 @@ module.exports = {
           config: { runtime: 'nodejs14.x' },
           src: './node_modules/arc-plugin-oauth/src/src/http/get-login'
         })
-      if (useMock)
+      if (useMock && stage === 'testing')
         endpoints.push({
           method: 'any',
           path: '/mock/auth/:part',
