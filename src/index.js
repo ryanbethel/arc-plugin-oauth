@@ -8,8 +8,8 @@ module.exports = {
     else
       return `https://github.com/login/oauth/authorize?client_id=${process.env.ARC_OAUTH_CLIENT_ID}${redirectUrlPart}`
   },
-  checkAuth: async function (req) {
-    return req?.session?.account
+  checkAuth: function (req) {
+    return req?.session?.oauth
   },
   authRedirect: async function (redirect) {
     return async function (req) {
@@ -138,7 +138,7 @@ async function authenticate(req, redirect) {
     let contentType = req.headers['Content-Type'] || req.headers['content-type']
     return /application\/json/gi.test(contentType)
   }
-  const account = req?.session?.account
+  const account = req?.session?.oauth
 
   if (!account) {
     if (isJSON(req)) {
