@@ -121,7 +121,7 @@ module.exports = {
           config: { runtime: 'nodejs14.x' },
           src: './node_modules/arc-plugin-oauth/src/src/http/get-login'
         })
-      if (useMock && !inventory.inv.deployStage)
+      if (useMock && !inventory.inv?._arc?.deployStage)
         endpoints.push({
           method: 'any',
           path: '/mock/auth/:part',
