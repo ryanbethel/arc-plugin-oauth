@@ -1,6 +1,6 @@
 {
     "name": "arc-plugin-oauth",
-    "version": "0.0.10",
+    "version": "0.0.11",
     "description": "Architect OAuth Plugin",
     "author": "Ryan Bethel",
     "main": "src/index.js",
