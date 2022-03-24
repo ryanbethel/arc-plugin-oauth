@@ -98,7 +98,7 @@ module.exports = {
     },
     http: function ({ arc, inventory }) {
       const specificRoutes = arc.oauth.find((i) => i[0] === 'routes') || false
-      const useMock = arc.oauth.find((i) => i[0] === 'use-mock')[1]
+      const useMock = arc.oauth.find((i) => i[0] === 'use-mock')?.[1]
       let endpoints = []
       if (!specificRoutes || specificRoutes.includes('auth'))
         endpoints.push({
