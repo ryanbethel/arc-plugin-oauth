@@ -3,12 +3,11 @@
 .DS_Store
 .vscode
 node_modules
-public/css/*
-cert.info
 sam.json
 sam.yaml
 preferences.arc
 static.json
 prefs.arc
-example/
+test/
 package-lock.json
+doc/

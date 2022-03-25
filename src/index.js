@@ -1,7 +1,7 @@
 module.exports = {
   loginHref: function () {
     const redirectUrlPart = process.env.ARC_OAUTH_REDIRECT_URL
-      ? `&redirect_url=${process.env.ARC_OAUTH_REDIRECT_URL}`
+      ? `&redirect_uri=${process.env.ARC_OAUTH_REDIRECT_URL}`
       : ''
     if (process.env.ARC_OAUTH_USE_MOCK)
       return 'http://localhost:3333/mock/auth/login'

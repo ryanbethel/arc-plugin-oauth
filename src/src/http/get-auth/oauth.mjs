@@ -9,7 +9,7 @@ export default async function oauth(req) {
   if (!useMock) {
     data.client_id = process.env.ARC_OAUTH_CLIENT_ID
     data.client_secret = process.env.ARC_OAUTH_CLIENT_SECRET
-    data.redirect_url = process.env.ARC_OAUTH_REDIRECT
+    data.redirect_uri = process.env.ARC_OAUTH_REDIRECT
   }
   let result = await tiny.post({
     url: process.env.ARC_OAUTH_TOKEN_URI,
