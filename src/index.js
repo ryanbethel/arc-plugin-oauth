@@ -8,7 +8,9 @@ module.exports = {
     if (process.env.ARC_OAUTH_USE_MOCK)
       return `http://localhost:3333/mock/auth/login${
         redirectAfterAuth
-          ? `?state=${JSON.stringify({ redirectAfterAuth })}`
+          ? `?state=${encodeURIComponent(
+              JSON.stringify({ redirectAfterAuth })
+            )}`
           : ''
       }`
     else
@@ -16,7 +18,9 @@ module.exports = {
         process.env.ARC_OAUTH_CLIENT_ID
       }${redirectUrlPart}${
         redirectAfterAuth
-          ? `&state=${JSON.stringify({ redirectAfterAuth })}`
+          ? `&state=${encodeURIComponent(
+              JSON.stringify({ redirectAfterAuth })
+            )}`
           : ''
       }`
   },

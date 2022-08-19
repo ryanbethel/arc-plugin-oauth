@@ -22,7 +22,7 @@ async function getLogin(req) {
             process.env.ARC_OAUTH_CODE_URI +
             '?mock=' +
             mockCodes[i] +
-            `${state ? `&state=${state}` : ''}`
+            `${state ? `&state=${encodeURIComponent(state)}` : ''}`
           }">${k}</a>`
       )
       .join(' <br/> ')}
@@ -37,7 +37,7 @@ async function getCode(req) {
     return {
       status: 302,
       location: `${process.env.ARC_OAUTH_AUTH_URI}?code=${code}${
-        state ? `&state=${state}` : ''
+        state ? `&state=${encodeURIComponent(state)}` : ''
       }`
     }
   }
