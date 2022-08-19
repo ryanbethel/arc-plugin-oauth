@@ -11,6 +11,7 @@ async function getLogin(req) {
     Buffer.from(i).toString('base64')
   )
   if (req.params.part === 'login') {
+    const state = req?.query?.state
     return {
       status: 200,
       html: `
@@ -18,7 +19,10 @@ async function getLogin(req) {
       .map(
         (k, i) =>
           `<a href="${
-            process.env.ARC_OAUTH_CODE_URI + '?mock=' + mockCodes[i]
+            process.env.ARC_OAUTH_CODE_URI +
+            '?mock=' +
+            mockCodes[i] +
+            `${state ? `&state=${state}` : ''}`
           }">${k}</a>`
       )
       .join(' <br/> ')}
@@ -27,11 +31,14 @@ async function getLogin(req) {
   }
 }
 async function getCode(req) {
+  const state = req?.query?.state
   if (req.params.part === 'code') {
     const code = req.query.mock
     return {
       status: 302,
-      location: `${process.env.ARC_OAUTH_AUTH_URI}?code=${code}`
+      location: `${process.env.ARC_OAUTH_AUTH_URI}?code=${code}${
+        state ? `&state=${state}` : ''
+      }`
     }
   }
 }

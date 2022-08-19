@@ -1,12 +1,24 @@
 module.exports = {
-  loginHref: function () {
+  loginHref: function (req) {
+    const redirectAfterAuth = req?.session?.redirectAfterAuth
+
     const redirectUrlPart = process.env.ARC_OAUTH_REDIRECT_URL
       ? `&redirect_uri=${process.env.ARC_OAUTH_REDIRECT_URL}`
       : ''
     if (process.env.ARC_OAUTH_USE_MOCK)
-      return 'http://localhost:3333/mock/auth/login'
+      return `http://localhost:3333/mock/auth/login${
+        redirectAfterAuth
+          ? `?state=${JSON.stringify({ redirectAfterAuth })}`
+          : ''
+      }`
     else
-      return `https://github.com/login/oauth/authorize?client_id=${process.env.ARC_OAUTH_CLIENT_ID}${redirectUrlPart}`
+      return `https://github.com/login/oauth/authorize?client_id=${
+        process.env.ARC_OAUTH_CLIENT_ID
+      }${redirectUrlPart}${
+        redirectAfterAuth
+          ? `&state=${JSON.stringify({ redirectAfterAuth })}`
+          : ''
+      }`
   },
   checkAuth: function (req) {
     return req?.session?.account

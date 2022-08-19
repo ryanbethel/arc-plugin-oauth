@@ -1,8 +1,8 @@
 # Architect OAuth Plugin
-A plugin for adding OAuth to Architect apps. It includes mocking for local development to avoid setting up oauth providers until you are ready to deploy for the first time.
+A plugin for adding OAuth to Architect apps. It includes mocking for local development so no provider keys are needed until you are ready to deploy.
 
 ## Getting started
-The following are the minimal steps to use the plugin for a new app before a real OAuth provider is setup using the mock provider.
+To get started follow these steps:
 1. `npm i arc-plugin-oauth`
 2. Add plugin to Architect manifest:
 ```
@@ -74,10 +74,10 @@ async function index(req) {
 
 ## Built-in routes 
 The plugin adds the following built-in routes:
-- `get /auth`: The primary route for decoding and verifying OAuth tokens from providers. This is the route that OAuth redirects are pointed to. This is the minimal route that must be enabled for this plugin to work. 
-- `get /login`: A basic login page. As the app is built this route can be replaced by a styled version using the [loginHref](#custom-login-page-and-loginhref-helper) helper.
-- `post /logout`: Post route that clears the session causing the user to be logged out.
-- `get /mock/auth`: Provides the mock provider for local development. If mocking is disabled this route is not included.
+- `get /auth`: The primary route for decoding and verifying OAuth tokens from providers. This is the route that OAuth redirects are pointed to. 
+- `get /login`: A basic login page. This route can be replaced with a custom version using the [loginHref](#custom-login-page-and-loginhref-helper) helper.
+- `post /logout`: Post route that clears the session cookies causing the user to be logged out.
+- `get /mock/auth`: Acts as a mock provider for local development. If mocking is disabled this route is not included.
 
 By default all routes are included. They can be customized using the [`routes parameter`](#configuration-api) parameter. 
 
@@ -158,7 +158,8 @@ get /login # adds a custom '/login' route
 @oauth
 routes auth logout # removes the built-in '/login' route
 ```
-Use the `loginHref()` function as shown below to point to initiate the login. This is a function that is executed in the handler because it needs to access the environment variable `ARC_OAUTH_REDIRECT_URL` at execution time(see [setup OAuth Providers](#setup-oauth-providers)). 
+Use the `loginHref()` function as shown below to point to initiate the login. This is a function that is executed in the handler because it needs to access the environment variable `ARC_OAUTH_REDIRECT_URL` at execution time (see [setup OAuth Providers](#setup-oauth-providers)). 
+
 ```javascript
 // src/http/get-login/index.mjs
 import arc from '@architect/functions'
@@ -207,7 +208,7 @@ export const handler = arc.http.async(authRedirect('/signup'), index)
 ```
 
 ### Checking authentication using `checkAuth` helper
-If you want to check authentication status without using the middleware to redirect you can use the `checkAuth` helper. This helper returns the authentication status for branching or other logic. 
+If you want to check authentication status without using the middleware to redirect you can use the `checkAuth` helper. This helper returns the authentication user for branching or other logic. It returns false if unauthenticated. 
 
 ```javascript
 //src/http/get-index/index.mjs

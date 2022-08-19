@@ -3,14 +3,22 @@ import oauth from './oauth.mjs'
 import authorize from './authorize.mjs'
 const afterAuthRedirect = process.env.ARC_OAUTH_AFTER_AUTH || '/'
 const customAuthorize = process.env.ARC_OAUTH_CUSTOM_AUTHORIZE
-const redirect = customAuthorize || afterAuthRedirect
 export const handler = arc.http.async(auth)
 const useAllowList = process.env.ARC_OAUTH_USE_ALLOW_LIST
 
 async function auth(req) {
   const {
-    query: { code }
+    query: { code, state }
   } = req
+
+  let oauthStateRedirect
+  try {
+    if (state) oauthStateRedirect = JSON.parse(state).redirectAfterAuth
+  } catch (e) {
+    console.log(e)
+  }
+  const redirect =
+    customAuthorize || oauthStateRedirect || afterAuthRedirect || '/'
   if (code) {
     try {
       const oauthAccount = await oauth(req)
@@ -24,10 +32,16 @@ async function auth(req) {
           throw Error('user not found')
         }
       }
-
-      return {
-        session,
-        location: redirect
+      if (customAuthorize && oauthStateRedirect) {
+        return {
+          session: { ...session, redirectAfterAuth: oauthStateRedirect },
+          location: customAuthorize
+        }
+      } else {
+        return {
+          session,
+          location: redirect
+        }
       }
     } catch (err) {
       return {
