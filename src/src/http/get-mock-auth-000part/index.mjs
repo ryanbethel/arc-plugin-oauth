@@ -1,11 +1,22 @@
 import arc from '@architect/functions'
-const mockAllowListPromise = import(
-  `@architect/shared/${process.env.ARC_OAUTH_MOCK_ALLOW_LIST}`
-)
+
+const loadModule = async (modulePath) => {
+  try {
+    // standard arc
+    return await import(
+      `@architect/shared/${modulePath}`
+    )
+  } catch (e) {
+    // enhance app
+    return await import(
+      `@architect/views/models/${modulePath}`
+    )
+  }
+}
 
 export const handler = arc.http.async(getLogin, getCode, getToken, getUserInfo)
 async function getLogin(req) {
-  let mockAllowList = (await mockAllowListPromise).default
+  const mockAllowList = (await loadModule(process.env.ARC_OAUTH_MOCK_ALLOW_LIST)).default
   const providerAccounts = Object.keys(mockAllowList.mockProviderAccounts)
   const mockCodes = providerAccounts.map((i) =>
     Buffer.from(i).toString('base64')
@@ -53,7 +64,7 @@ async function getToken(req) {
 }
 async function getUserInfo(req) {
   if (req.params.part === 'user') {
-    let mockAllowList = (await mockAllowListPromise).default
+    const mockAllowList = (await loadModule(process.env.ARC_OAUTH_MOCK_ALLOW_LIST)).default
     const token = req.headers.authorization.replace('token ', '')
     const userReference = Buffer.from(token, 'base64').toString('ascii')
     const user = mockAllowList.mockProviderAccounts[userReference]
