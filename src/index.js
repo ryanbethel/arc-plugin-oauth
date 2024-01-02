@@ -120,28 +120,28 @@ module.exports = {
         endpoints.push({
           method: 'get',
           path: '/auth',
-          config: { runtime: 'nodejs14.x' },
+          config: { runtime: 'nodejs18.x' },
           src: './node_modules/arc-plugin-oauth/src/src/http/get-auth'
         })
       if (!specificRoutes || specificRoutes.includes('logout'))
         endpoints.push({
           method: 'post',
           path: '/logout',
-          config: { runtime: 'nodejs14.x' },
+          config: { runtime: 'nodejs18.x' },
           src: './node_modules/arc-plugin-oauth/src/src/http/post-logout'
         })
       if (!specificRoutes || specificRoutes.includes('login'))
         endpoints.push({
           method: 'get',
           path: '/login',
-          config: { runtime: 'nodejs14.x' },
+          config: { runtime: 'nodejs18.x' },
           src: './node_modules/arc-plugin-oauth/src/src/http/get-login'
         })
       if (useMock && !inventory.inv?._arc?.deployStage)
         endpoints.push({
           method: 'any',
           path: '/mock/auth/:part',
-          config: { runtime: 'nodejs14.x' },
+          config: { runtime: 'nodejs18.x' },
           src: './node_modules/arc-plugin-oauth/src/src/http/get-mock-auth-000part'
         })
 
