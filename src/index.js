@@ -24,15 +24,15 @@ module.exports = {
           : ''
       }`
   },
-  checkAuth: function (req) {
+  checkAuth: async function (req) {
     return req?.session?.account
   },
-  authRedirect: function (redirect) {
+  authRedirect: async function (redirect) {
     return function (req) {
       return authenticate(req, redirect)
     }
   },
-  auth: function (req) {
+  auth: async function (req) {
     return authenticate(req, false)
   },
   set: {
@@ -150,7 +150,7 @@ module.exports = {
   }
 }
 
-function authenticate(req, redirect) {
+async function authenticate(req, redirect) {
   const unAuthRedirect = process.env.ARC_OAUTH_UN_AUTH_REDIRECT || '/login'
   function isJSON(req) {
     let contentType = req.headers['Content-Type'] || req.headers['content-type']
